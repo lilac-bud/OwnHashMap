@@ -151,6 +151,7 @@ public class OwnHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
         return null;
     }
     
+    @SuppressWarnings({"rawtypes","unchecked"})
     private Node<K, V>[] resize() {
         final Node<K, V>[] oldTable = table;
         final int oldCapacity = oldTable == null ? 0 : oldTable.length;
