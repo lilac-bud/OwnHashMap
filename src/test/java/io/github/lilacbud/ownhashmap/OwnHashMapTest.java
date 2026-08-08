@@ -1,5 +1,6 @@
 package io.github.lilacbud.ownhashmap;
 
+import java.util.Iterator;
 import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
@@ -59,6 +60,15 @@ public class OwnHashMapTest {
         assertEquals(expectedResult, result);
         assertEquals(expectedMap, map);
     }
+    
+    @Test
+    public void givenThatEntryIsAbsent_whenPuttingValueIfAbsent_thenPutAndReturnNull() {
+        Map<String, String> expectedMap = Map.of("Key1", "Value1", "Key2", "Value2");
+        OwnHashMap<String, String> map = new OwnHashMap<>(Map.of("Key1", "Value1"));
+        String result = map.putIfAbsent("Key2", "Value2");
+        assertNull(result);
+        assertEquals(expectedMap, map);
+    }
 
     @Test
     public void givenThatEntryIsPresent_whenPuttingValueIfAbsent_thenDoNotPutAndReturnOldValue() {
@@ -68,6 +78,15 @@ public class OwnHashMapTest {
         String result = map.putIfAbsent("Key1", "Value2");
         assertEquals(expectedResult, result);
         assertEquals(expectedMap, map);
+    }
+    
+    @Test
+    public void givenThatMapIsEmpty_whenRemovingKey_thenReturnNull() {
+        @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+        OwnHashMap<String, String> map = new OwnHashMap<>();
+        String result = map.remove("Key1");
+        assertNull(result);
+        assertTrue(map.isEmpty());
     }
 
     @Test
@@ -85,6 +104,15 @@ public class OwnHashMapTest {
         OwnHashMap<String, String> map = new OwnHashMap<>(Map.of("Key1", "Value1"));
         String result = map.remove("Key1");
         assertEquals(expectedResult, result);
+        assertTrue(map.isEmpty());
+    }
+    
+    @Test
+    public void givenThatMapIsEmpty_whenRemovingKeyAndValue_thenReturnFalse() {
+        @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+        OwnHashMap<String, String> map = new OwnHashMap<>();
+        boolean result = map.remove("Key1", "Value1");
+        assertFalse(result);
         assertTrue(map.isEmpty());
     }
 
@@ -109,5 +137,31 @@ public class OwnHashMapTest {
         OwnHashMap<String, String> map = new OwnHashMap<>(Map.of("Key1", "Value1"));
         map.clear();
         assertTrue(map.isEmpty());
-    }   
+    }
+    
+    @Test
+    public void givenThatMapIsEmpty_whenGettingIterator_thenIteratorDoesNotHaveNext() {
+        @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+        OwnHashMap<String, String> map = new OwnHashMap<>();
+        Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
+        assertFalse(it.hasNext());
+    }
+    
+    @Test
+    public void givenThatMapIsNotEmpty_whenGettingIterator_thenIteratorHasNext() {
+        OwnHashMap<String, String> map = new OwnHashMap<>(Map.of("Key1", "Value1"));
+        Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
+        assertTrue(it.hasNext());
+    }
+    
+    @Test
+    public void givenThatMapIsNotEmpty_whenIterating_thenIteratorShouldReturnAllEntries() {
+        Map.Entry<String, String> expectedEntry = Map.entry("Key1", "Value1");
+        OwnHashMap<String, String> map = new OwnHashMap<>(Map.of("Key1", "Value1"));
+        Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
+        Map.Entry<String, String> entry = it.next();
+        assertEquals(expectedEntry.getKey(), entry.getKey());
+        assertEquals(expectedEntry.getValue(), entry.getValue());
+        assertFalse(it.hasNext());
+    }
 }
