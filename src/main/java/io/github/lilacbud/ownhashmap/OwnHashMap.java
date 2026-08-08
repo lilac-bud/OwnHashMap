@@ -26,14 +26,14 @@ public class OwnHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
     
     public OwnHashMap(Map<? extends K, ? extends V> map) {
         loadFactor = DEFAULT_LOAD_FACTOR;
-        size = Objects.requireNonNull(map).size();
-        if (size > 0) {
-            final int rawCapacity = (int)(size / loadFactor);
+        final int mapSize = Objects.requireNonNull(map).size();
+        if (mapSize > 0) {
+            final int rawCapacity = (int)(mapSize / loadFactor);
             int capacity;
             if (rawCapacity > MAXIMUM_CAPACITY) {
                  capacity = MAXIMUM_CAPACITY;
             } else {
-                for (capacity = 1; capacity <= rawCapacity; capacity *= 2) {}
+                for (capacity = 1; capacity < rawCapacity; capacity *= 2) {}
                 if (capacity > MAXIMUM_CAPACITY) {
                     capacity = MAXIMUM_CAPACITY;
                 }
@@ -118,7 +118,8 @@ public class OwnHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
                 node = node.next;
             }
         }
-        if (++size > threshold) {
+        ++size;
+        if (size > threshold) {
             resize();
         }
         return null;
@@ -145,8 +146,9 @@ public class OwnHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
                 prevNode.next = node.next;
             }
             --size;
+            return node;
         }
-        return node;
+        return null;
     }
     
     private Node<K, V>[] resize() {
@@ -240,7 +242,7 @@ public class OwnHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
             V oldValue = this.value;
             this.value = value;
             return oldValue;
-        } 
+        }
     }
     
     //this implementation is not fail-fast
@@ -250,8 +252,9 @@ public class OwnHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
 
         public EntryIterator() {
             if (table != null && table.length > 0) {
-                for (index = 0; index < table.length && table[index] != null; ++index) {}
-                next = table[index];
+                for (index = 0; next == null && index < table.length; ++index) {
+                    next = table[index];
+                } 
             }
         }
         

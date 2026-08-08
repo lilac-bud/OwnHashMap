@@ -1,7 +1,6 @@
 package io.github.lilacbud.ownhashmap;
 
 import java.util.Map;
-import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
@@ -44,40 +43,40 @@ public class OwnHashMapTest {
 
     @Test
     public void givenThatEntryIsAbsent_whenPuttingValue_thenReturnNull() {
-        Set<Map.Entry<String, String>> expectedEntries = Map.of("Key1", "Value1").entrySet();
+        Map<String, String> expectedMap = Map.of("Key1", "Value1");
         OwnHashMap<String, String> map = new OwnHashMap<>();
         String result = map.put("Key1", "Value1");
         assertNull(result);
-        assertEquals(expectedEntries, map.entrySet());
+        assertEquals(expectedMap, map);
     }
     
     @Test
     public void givenThatEntryIsPresent_whenPuttingValue_thenReturnOldValue() {
-        Set<Map.Entry<String, String>> expectedEntries = Map.of("Key1", "Value2").entrySet();
+        Map<String, String> expectedMap = Map.of("Key1", "Value2");
         String expectedResult = "Value1";
         OwnHashMap<String, String> map = new OwnHashMap<>(Map.of("Key1", "Value1"));
         String result = map.put("Key1", "Value2");
         assertEquals(expectedResult, result);
-        assertEquals(expectedEntries, map.entrySet());
+        assertEquals(expectedMap, map);
     }
 
     @Test
     public void givenThatEntryIsPresent_whenPuttingValueIfAbsent_thenDoNotPutAndReturnOldValue() {
-        Set<Map.Entry<String, String>> expectedEntries = Map.of("Key1", "Value1").entrySet();
+        Map<String, String> expectedMap = Map.of("Key1", "Value1");
         String expectedResult = "Value1";
         OwnHashMap<String, String> map = new OwnHashMap<>(Map.of("Key1", "Value1"));
-        String result = map.put("Key1", "Value2");
+        String result = map.putIfAbsent("Key1", "Value2");
         assertEquals(expectedResult, result);
-        assertEquals(expectedEntries, map.entrySet());
+        assertEquals(expectedMap, map);
     }
 
     @Test
     public void givenThatEntryIsAbsent_whenRemovingKey_thenReturnNull() {
-        Set<Map.Entry<String, String>> expectedEntries = Map.of("Key1", "Value1").entrySet();
+        Map<String, String> expectedMap = Map.of("Key1", "Value1");
         OwnHashMap<String, String> map = new OwnHashMap<>(Map.of("Key1", "Value1"));
         String result = map.remove("Key2");
         assertNull(result);
-        assertEquals(expectedEntries, map.entrySet());
+        assertEquals(expectedMap, map);
     }
     
     @Test
@@ -91,11 +90,11 @@ public class OwnHashMapTest {
 
     @Test
     public void givenThatEntryValueDoesNotMatch_whenRemovingKeyAndValue_thenDoNotRemoveEntryAndReturnFalse() {
-        Set<Map.Entry<String, String>> expectedEntries = Map.of("Key1", "Value1").entrySet();
+        Map<String, String> expectedMap = Map.of("Key1", "Value1");
         OwnHashMap<String, String> map = new OwnHashMap<>(Map.of("Key1", "Value1"));
         boolean result = map.remove("Key1", "Value2");
         assertFalse(result);
-        assertEquals(expectedEntries, map.entrySet());
+        assertEquals(expectedMap, map);
     }
     
     @Test void givenThatEntryValueMatches_whenRemovingKeyAndValue_thenRemoveEntryAndReturnTrue() {
